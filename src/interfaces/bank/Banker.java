@@ -10,19 +10,20 @@ public interface Banker {
         return "Current fund is " +getBalance();
     }
 }
-class MinimumBalanceBank implements Banker {
+class Bank implements Banker {
     private int balance;
 
 
     public String getBalance() {
-        return "Your current fund is " + balance;
+        return "Your current fund is $" + balance;
     }
 
     @Override
     public double withdraw(double amount) throws InsufficientFundException {
         if (balance >= amount) {
             balance -= amount;
-            System.out.println("Your current fund is $" + balance);
+            System.out.println("You have successfully withdrawn $"+amount);
+//            System.out.println("Your current fund is $" + balance);
         }
         if (balance < 0) throw new InsufficientFundException();
 
@@ -35,23 +36,12 @@ class MinimumBalanceBank implements Banker {
             if (amount <= 2000) {
                 balance += amount;
                 System.out.println("You have deposited $"+amount);
-                System.out.println("Your current fund is $" + balance);
+//                System.out.println("Your current fund is $" + balance);
             } else throw new FundLimitExceededException();
         }
 
     }
 
-class NoLimitBank implements Banker {
-    @Override
-    public double withdraw(double amount) {
-        return 0;
-    }
-
-    @Override
-    public void deposit(double amount) {
-
-    }
-}
 
 class TestBank {
     public static String finalBalance=null;
@@ -64,7 +54,7 @@ class TestBank {
     }
     public static void main(String[] args) throws InsufficientFundException, FundLimitExceededException {
         int option;
-        Banker b = new MinimumBalanceBank();
+        Banker b = new Bank();
         printMenu();
         do {
             System.out.println();

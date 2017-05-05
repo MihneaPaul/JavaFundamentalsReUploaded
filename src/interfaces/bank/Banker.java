@@ -1,10 +1,17 @@
 package interfaces.bank;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 /**
  * Created by Mihnea on 26.04.2017.
  */
 public interface Banker {
-    double withdraw(double amount) throws InsufficientFundException;
+    void withdraw(double amount) throws InsufficientFundException;
     void deposit(double amount)throws FundLimitExceededException;
     default String getBalance() {
         return "Current fund is " +getBalance();
@@ -15,34 +22,71 @@ class Bank implements Banker {
 
 
     public String getBalance() {
-        return "Your current fund is $" + balance;
+//        Path path = Paths.get("balance.log");
+        try {
+            FileInputStream fis = new FileInputStream("balance.log");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            int i = ois.readInt();
+//        try {
+//            List<String> data = Files.readAllLines(path, Charset.forName("UTF-16"));
+//            for (String line : data) {
+//                System.out.println(line);
+//            }
+////        return "Your current fund is $" + balance;
+//        } catch (IOException e) {
+//            System.out.println("I/O error " + e);
+//        }
+        }catch (IOException e){
+            System.out.println(e);
+        }
+        return "Your balance is "+balance;
     }
 
     @Override
-    public double withdraw(double amount) throws InsufficientFundException {
-        if (balance >= amount) {
-            balance -= amount;
-            System.out.println("You have successfully withdrawn $"+amount);
+    public void withdraw(double amount) throws InsufficientFundException {
+        try {
+            FileOutputStream fos = new FileOutputStream("balance.log");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+//        Path path = Paths.get("balance.log");
+//        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get("balance.log"))) {
+            if (balance >= amount) {
+                balance -= amount;
+                System.out.println("You have successfully withdrawn $" + amount);
+                oos.writeObject(balance);
+//                Files.write(Paths.get("balance.log"), balance, Charset.forName("UTF-8"));
 //            System.out.println("Your current fund is $" + balance);
-        }
-        if (balance < 0) throw new InsufficientFundException();
+            }
+            if (balance < 0) throw new InsufficientFundException();
 
 //     else System.out.println("No money available.");
-        return balance;
+
+//        } catch (IOException e) {
+//            System.out.println("I/O error " + e);
+        }catch (IOException e){
+            System.out.println(e);
+        }
     }
 
-    @Override
-    public void deposit(double amount) throws FundLimitExceededException {
+        @Override
+        public void deposit ( double amount) throws FundLimitExceededException {
+//            try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get("balance.log"))) {
+            try {
+                FileOutputStream fos = new FileOutputStream("balance.log");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
             if (amount <= 2000) {
                 balance += amount;
-                System.out.println("You have deposited $"+amount);
+                System.out.println("You have deposited $" + amount);
+                oos.write(balance);
 //                System.out.println("Your current fund is $" + balance);
             } else throw new FundLimitExceededException();
-        }
+        }catch (IOException e){
+                System.out.println("I/O error "+e);
+            }
 
     }
 
-
+}
 class TestBank {
     public static String finalBalance=null;
 

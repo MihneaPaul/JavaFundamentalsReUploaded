@@ -69,12 +69,6 @@ class TestBank {
             ObjectInputStream os = new ObjectInputStream(new FileInputStream("C:\\Users\\Mihnea\\IdeaProjects\\JavaFundamentalsChapter16-17\\balance.ser"));
             Object restoredBalance = os.readObject();
             Bank realBank = (Bank) restoredBalance;
-            System.out.println("TEST");
-            System.out.println("--------------");
-            System.out.println(realBank.getBalance());
-            System.out.println("--------------");
-            System.out.println("END OF TEST");
-            System.out.println("--------------\n");
             os.close();
             b=realBank;
         }catch (IOException | ClassNotFoundException e) {
